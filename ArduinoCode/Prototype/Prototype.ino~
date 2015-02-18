@@ -47,7 +47,7 @@ void loop(void)
   digitalWrite(wrong,LOW);
   digitalWrite(right,LOW);
 }
-//Haloooooo
+
 //will2bill = 3938200448
 //RBard = 3938200448
 

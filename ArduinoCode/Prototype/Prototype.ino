@@ -33,6 +33,7 @@ void loop(void)
     delay(100);
     uint8_t block[16];
     nfc.readMemoryBlock(1,19,block);
+    Serial.print(block[3]); 
     if (block[3]==3)
     {
       digitalWrite(right,HIGH);
@@ -47,7 +48,7 @@ void loop(void)
   digitalWrite(wrong,LOW);
   digitalWrite(right,LOW);
 }
-
+//Haloooooo
 //will2bill = 3938200448
 //RBard = 3938200448
 
