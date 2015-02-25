@@ -1,5 +1,3 @@
-#include <Console.h>
-#include <process.h>
 #include <PN532.h>
 #define SS 10
 #if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
@@ -13,52 +11,90 @@
 #endif
 
 const int ledPin = 13; // the pin that the LED is attached to
-int incomingByte;      // a variable to read incoming serial data into
 PN532 nfc(SCK, MISO, MOSI, SS);
 
 void setup()
 { // initialize serial communication:
-  Bridge.begin();
-  Console.begin();
+  Serial.begin(9600);
   nfc.begin();
+  // initialize the LED pin as an output:
+  pinMode(ledPin, OUTPUT);
+  //runCurl();
+  //runCpuInfo();
   uint32_t versiondata = nfc.getFirmwareVersion();
   if (!versiondata)
   {
-    Console.print("Didn't find PN53x board");
+    Serial.print("Didn't find PN53x board");
     while (1); //halt
   }
-  //Continues if okay
-  Console.print("Found chip PN5"); Console.println((versiondata >> 24) & 0xFF, HEX);
-  Console.print("Firmware ver. "); Console.print((versiondata >> 16) & 0xFF, DEC);
-  Console.print('.'); Console.println((versiondata >> 8) & 0xFF, DEC);
-  Console.print("Supports "); Console.println(versiondata & 0xFF, HEX);
   nfc.SAMConfig();
-
-  while (!Console) {
-    ; // wait for Console port to connect.
-  }
-  Console.println("You're connected to the Console!!!!");
-  // initialize the LED pin as an output:
-  pinMode(ledPin, OUTPUT);
-  runCurl();
-  runCpuInfo();
+  Serial.println("Hello!");
 }
 
 void loop()
 {
   // see if there's incoming serial data:
-  if (Console.available() > 0) {
-    // read the oldest byte in the serial buffer:
-    incomingByte = Console.read();
-    if (incomingByte == 'H') // if it's a capital H (ASCII 72), turn on the LED:
+  uint32_t id;
+  // look for MiFare type cards
+  Serial.println("hi");
+  id = nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A);
+  if (id != 0) 
     {
-      Console.println("You pressed H");
+        Serial.print("Read card #");
+        Serial.println(id);
+        Serial.println();
+
+        uint8_t keys[]= {0xFF,0xFF,0xFF,0xFF,0xFF,0xFF};  // default key of a fresh card
+        for(uint8_t blockn=0;blockn<64;blockn++) {
+            if(nfc.authenticateBlock(1, id ,blockn,KEY_A,keys)) //authenticate block blockn
+            {
+                //if authentication successful
+                uint8_t block[16];
+                //read memory block blockn
+                if(nfc.readMemoryBlock(1,blockn,block))
+                {
+                    //if read operation is successful
+                    for(uint8_t i=0;i<16;i++)
+                    {
+                        //print memory block
+                        Serial.print(block[i],HEX);
+                        if(block[i] <= 0xF) //Data arrangement / beautify
+                        {
+                            Serial.print("  ");
+                        }
+                        else
+                        {
+                            Serial.print(" ");
+                        }
+                    }
+
+                    Serial.print("| Block ");
+                    if(blockn <= 9) //Data arrangement / beautify
+                    {
+                        Serial.print(" ");
+                    }
+                    Serial.print(blockn,DEC);
+                    Serial.print(" | ");
+
+                    if(blockn == 0)
+                    {
+                        Serial.println("Manufacturer Block");
+                    }
+                    else
+                    {
+                        if(((blockn + 1) % 4) == 0)
+                        {
+                            Serial.println("Sector Trailer");
+                        }
+                        else
+                        {
+                            Serial.println("Data Block");
+                        }
+                    }
+                }
+            }
+        }
     }
-    else if (incomingByte == 'L') // if it's an L (ASCII 76) turn off the LED:
-    {
-      Console.println("You pressed L");
-    }
-  }
   //Useful way of knowing for sure the program is running
   digitalWrite(ledPin, HIGH);
   delay(100);
@@ -66,7 +102,7 @@ void loop()
   delay(100);
 }
 
-void runCurl()
+/*void runCurl()
 {
   Process p;
   p.begin("curl");
@@ -76,9 +112,9 @@ void runCurl()
   while (p.available() > 0)
   {
     char c = p.read();
-    Console.print(c);
+    Serial.print(c);
   }
-  Console.flush();
+  Serial.flush();
 }
 
 void runCpuInfo()
@@ -91,7 +127,7 @@ void runCpuInfo()
   while (p.available() > 0)
   {
     char c = p.read();
-    Console.print(c);
+    Serial.print(c);
   }
-  Console.flush();
-}
+  Serial.flush();
+}*/

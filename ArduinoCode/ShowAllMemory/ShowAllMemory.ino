@@ -34,31 +34,22 @@ void loop(void)
   {
     digitalWrite(processing,HIGH);
     delay(100);
-    uint8_t block[16];
-    nfc.readMemoryBlock(1,19,block);
-    Serial.println();
-    Serial.println(block[3]); 
-    Serial.println(block[4]);
-    Serial.println(block[5]);
-    Serial.println(block[6]);
-    Serial.println(block[7]);
-    Serial.println(block[8]);
-    Serial.println(block[9]);
-    if (block[3]==3)
+    for (int j=0;j<42;j++)
     {
-      digitalWrite(right,HIGH);
-      Serial.println("Yes!");
-    }
-    else
-    {
-      Serial.println("No!");
-      digitalWrite(wrong,HIGH);
+      Serial.print("Row ");
+      Serial.print(j);
+      Serial.print(": ");
+      uint8_t block[16];
+      nfc.readMemoryBlock(1,j,block);
+      for(int i=0;i<16;i++)
+      {
+        Serial.print(block[i]);
+        Serial.print(" ");
+      }
+      Serial.println();
     }
   }
   delay(1000);
-  digitalWrite(processing,LOW);
-  digitalWrite(wrong,LOW);
-  digitalWrite(right,LOW);
 }
 //Haloooooo
 //will2bill = 3938200448
@@ -82,3 +73,4 @@ void loop(void)
     Serial.println();
     digitalWrite(right,HIGH);
 */
+
