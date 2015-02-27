@@ -1,0 +1,70 @@
+
+
+body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p{margin:0;padding:0;border:0;font-size:100%;font:inherit;vertical-align:baseline;}
+a{text-decoration:none;}
+body{
+               font-family: 'Open Sans', sans-serif;
+
+}
+
+
+.headbar{
+  background:#213C57;
+width:100%;
+height: 10%;     
+ } 
+
+.head {
+position: absolute;
+top : 1%;
+right: 47%;
+ 
+}
+.title
+{
+position: absolute;
+top : 3%;
+left : 1%;
+color: #ffffff;
+}
+
+#log_out
+{
+position: absolute;
+top : 3%;
+left : 95%;
+color: #ffffff;
+}
+
+a:visited
+{
+color: #FFFFFF;
+}
+.courses
+{
+margin-top : 7%;
+margin-left : 3%;
+font-size: 2.2em;
+}
+.course_list
+{
+margin-left : 3%;
+font-size: 1.2em;
+
+}
+.students
+{
+position: absolute;
+top: 10%;
+left: 85%;
+margin-top: 7%;
+font-size: 2.2em;
+}
+.student_list
+{
+position: absolute;
+top: 10%;
+left: 85%;
+margin-top: 12%;
+font-size: 1.2em;
+}

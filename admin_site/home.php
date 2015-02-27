@@ -5,17 +5,13 @@ include('session.php');
 <html>
 <head>
 	<title>Your Home Page</title>
-	<link href="style.css" rel="stylesheet" type="text/css">
+	<link href="css/home.css" rel="stylesheet" type="text/css">
+ <link href='http://fonts.googleapis.com/css?family=Open+Sans:600italic,400,300,600,700' rel='stylesheet' type='text/cs
+s'>
 </head>
-<body>
-	<div id="profile">
-		<b id="welcome">Welcome : <i><?php echo $login; ?></i></b>	
-	</div>
+
+<body id= "general">
 	<div id="log_out">
 	<a href="logout.php">Log out</a>
-
-        <div id= "course_list">
-        List of courses: <?php print_r($final_list);?>
-</div>
 </body>
 </html>
