@@ -1,133 +1,77 @@
-#include <PN532.h>
-#define SS 10
-#if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
-#define MISO 50
-#define MOSI 51
-#define SCK 52
-#else
-#define MISO 12
-#define MOSI 11
+#include <PN532.h> //These are needed for the NFC reader to work
 #define SCK 13
-#endif
+#define MOSI 11
+#define SS 10
+#define MISO 12
+PN532 nfc(SCK, MISO, MOSI, SS); //Set up the NFC reader
 
-const int ledPin = 13; // the pin that the LED is attached to
-PN532 nfc(SCK, MISO, MOSI, SS);
+int limit; //length of a studentID
+int start; //starting block of memory on the card
+String room; //what room does this arduino represent
 
 void setup()
-{ // initialize serial communication:
-  Serial.begin(9600);
-  nfc.begin();
-  // initialize the LED pin as an output:
-  pinMode(ledPin, OUTPUT);
-  //runCurl();
+{ 
+  Serial.begin(9600); //Opens serial port for user interaction (may not be needed in final version)
+  nfc.begin(); //starts up the NFC card
+  //runCurl(); These are for running external programs
   //runCpuInfo();
-  uint32_t versiondata = nfc.getFirmwareVersion();
+  uint32_t versiondata = nfc.getFirmwareVersion(); //Checks to make sure the NFC Shield is there
   if (!versiondata)
   {
-    Serial.print("Didn't find PN53x board");
-    while (1); //halt
+    Serial.print("Didn't find PN53x board"); //Lets you know if it can't find the NFC shield
+    while (1);
   }
-  nfc.SAMConfig();
-  Serial.println("Hello!");
+  nfc.SAMConfig(); //sets up NFC program
+  
+  room = "G001";
+  limit = 7; //Length of the studentID. Will have to be manually updated if student ID format changes
+  start = 20; //Staring block of memory the program checks, as above this would need to be manually reset.
+  Serial.println("Hello! Welcome to the touchReader program."); //Lets the user know the program is ready
 }
 
 void loop()
 {
   // see if there's incoming serial data:
+  uint8_t studentNo[limit];
+  
   uint32_t id;
-  // look for MiFare type cards
-  Serial.println("hi");
-  id = nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A);
-  if (id != 0) 
+  Serial.println("Please hold the card over the reader");
+  while(id==0) //waits till a card is presented
+  {
+    id = nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A); //Attempts to read student's card
+  }
+  if (id != 0) //Starts main program once card is placed on reader
+  {
+    Serial.println();
+    Serial.println("Reading card, please do not move it."); //Lets the user know what's happening
+    for (int i=0;i<limit;i++) //scans through each block on the card that contains the student number
     {
-        Serial.print("Read card #");
-        Serial.println(id);
-        Serial.println();
-
-        uint8_t keys[]= {0xFF,0xFF,0xFF,0xFF,0xFF,0xFF};  // default key of a fresh card
-        for(uint8_t blockn=0;blockn<64;blockn++) {
-            if(nfc.authenticateBlock(1, id ,blockn,KEY_A,keys)) //authenticate block blockn
-            {
-                //if authentication successful
-                uint8_t block[16];
-                //read memory block blockn
-                if(nfc.readMemoryBlock(1,blockn,block))
-                {
-                    //if read operation is successful
-                    for(uint8_t i=0;i<16;i++)
-                    {
-                        //print memory block
-                        Serial.print(block[i],HEX);
-                        if(block[i] <= 0xF) //Data arrangement / beautify
-                        {
-                            Serial.print("  ");
-                        }
-                        else
-                        {
-                            Serial.print(" ");
-                        }
-                    }
-
-                    Serial.print("| Block ");
-                    if(blockn <= 9) //Data arrangement / beautify
-                    {
-                        Serial.print(" ");
-                    }
-                    Serial.print(blockn,DEC);
-                    Serial.print(" | ");
-
-                    if(blockn == 0)
-                    {
-                        Serial.println("Manufacturer Block");
-                    }
-                    else
-                    {
-                        if(((blockn + 1) % 4) == 0)
-                        {
-                            Serial.println("Sector Trailer");
-                        }
-                        else
-                        {
-                            Serial.println("Data Block");
-                        }
-                    }
-                }
-            }
-        }
+      uint8_t block[16];
+      nfc.readMemoryBlock(1,(start+i),block); //receives the student number from the card
+      studentNo[i] = block[0]; //assigns it to the student number array (hex values)
     }
-  //Useful way of knowing for sure the program is running
-  digitalWrite(ledPin, HIGH);
-  delay(100);
-  digitalWrite(ledPin, LOW);
-  delay(100);
+    //ADD SOME CHECKS TO MAKE SURE THE STUDENTID IS IN THE CORRECT FORMAT ETC
+    String studentID;
+    for (int i=0;i<limit;i++) {studentID+=String((char)studentNo[i]);}
+    Serial.print("The card contains the ID ");
+    Serial.println(studentID);
+    Serial.println();
+    Serial.println("Please remove the card.");
+  }
+  Serial.println();
+  delay(1000);
 }
 
-/*void runCurl()
+void setupInternet()
 {
-  Process p;
-  p.begin("curl");
-  p.addParameter("http://arduino.cc/asciilogo.txt");
-  p.run();
-
-  while (p.available() > 0)
-  {
-    char c = p.read();
-    Serial.print(c);
-  }
-  Serial.flush();
 }
-
-void runCpuInfo()
+void upload(String sid) //Use of client id depended on libraries available with arduino yun
 {
-  Process p;
-  p.begin("cat");
-  p.addParameter("/proc/cpuinfo");
-  p.run();
-
-  while (p.available() > 0)
-  {
-    char c = p.read();
-    Serial.print(c);
-  }
-  Serial.flush();
-}*/
+  client.print("GET /add.php? room=");
+  client.print(room);
+  client.print(" && studentID=");
+  client.print(sid);
+  client.println(" HTTP/1.1");
+  client.println("Host: ma301wm.igor.gold.com");
+  client.println("User-Agent: MyArduino");
+}
