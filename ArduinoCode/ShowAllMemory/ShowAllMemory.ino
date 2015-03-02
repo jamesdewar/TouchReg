@@ -18,7 +18,7 @@ int wrong = 5;
  
 void setup(void) {
   Serial.begin(9600);
-  Serial.println("Setting Up");
+  Serial.println("Setting Up ShowAllMemory");
   pinMode(processing, OUTPUT);
   pinMode(right, OUTPUT);
   pinMode(wrong, OUTPUT);
