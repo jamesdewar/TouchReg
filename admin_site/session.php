@@ -1,7 +1,7 @@
 
 <?php
 // This php file was made with the help of: http://www.formget.com/login-form-in-php/
-
+include 'stats.php';
 $dbc = mysqli_connect('localhost', 'ma303jd', 'james23','ma303jd_admin');
 // Selecting Database
 //$db = mysqli_select_db($dbc, 'ma303jd_admin');
@@ -22,6 +22,7 @@ $query_course_list= mysqli_query($dbc,"SELECT course_list from teacher where Ema
 $final_list= array();
 $row_course_list = mysqli_fetch_array($query_course_list,MYSQLI_ASSOC);
 $course_list = $row_course_list['course_list'];
+$_SESSION["course_list"]= $course_list;
 $list_individual_courses = explode(" ",$course_list);
 
 foreach($list_individual_courses as $ray)
@@ -58,7 +59,7 @@ echo "<div class = \"courses\"> Courses </div>";
 
 echo "<div class = \"course_list\">";
 foreach ($final_list as $t){
-echo "- ".$t . "<br>";
+echo "<a href=\"\">".$t . "</a><br>";
 }
 echo "</div>";
 echo "<div class = \"students\"> Students </div>";
