@@ -26,8 +26,8 @@ position: absolute;
 top : 3%;
 left : 1%;
 color: #ffffff;
+font: 1.2em;
 }
-
 #log_out
 {
 position: absolute;
@@ -67,4 +67,12 @@ top: 10%;
 left: 85%;
 margin-top: 12%;
 font-size: 1.2em;
+}
+#stat
+{
+position: absolute;
+left: 20%;
+top:20%;
+    box-shadow: 0 0 10px #213C57;
+;
 }
