@@ -4,7 +4,6 @@ body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p{margin:0;padding:0;border
 a{text-decoration:none;}
 body{
                font-family: 'Open Sans', sans-serif;
-
 }
 
 
@@ -38,7 +37,7 @@ color: #ffffff;
 
 a:visited
 {
-color: #FFFFFF;
+color: #000000;
 }
 .courses
 {
@@ -71,8 +70,27 @@ font-size: 1.2em;
 #stat
 {
 position: absolute;
-left: 20%;
+left: 90%;
 top:20%;
-    box-shadow: 0 0 10px #213C57;
-;
+}
+
+#personal_stat1
+{
+position: absolute;
+left:50%;
+top: 13%;
+}
+
+#personal_stat2
+{
+position: absolute;
+left:50%;
+top: 33%;
+}
+
+#personal_stat3
+{
+position: absolute;
+left:50%;
+top: 53%;
 }

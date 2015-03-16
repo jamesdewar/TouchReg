@@ -1,28 +1,58 @@
 <?php
 include('session.php');
 ?>
-<!DOCTYPE html>
-<html>
-<head>
-	<title>Your Home Page</title>
-	<link href="css/home.css" rel="stylesheet" type="text/css">
- <link href='http://fonts.googleapis.com/css?family=Open+Sans:600italic,400,300,600,700' rel='stylesheet' type='text/cs
-s'>
-<script type="text/javascript" src="jquery-1.11.2.min.js"></script>
-<script>
-$(document).ready(function(){
-$("a").click(function(){
-var href = $("a").text();
-$("a").append(href);
-});
-</script>
-</head>
 
-<body id= "general">
-<div id = "stat">
-<img src = "images/stat.png"/>
+<div id = "personal"></div>
+<div id = "stat" style="min-width: 600px; height: 400px; margin: 0 auto">
+
+<?php
+echo '<script>';
+echo 'var dates = []; 
+	var number = []; 
+	number = '.json_encode($_SESSION['general_attendance_number']).'; 
+	dates = '.json_encode($_SESSION['general_attendance_course']).';
+	$(function () {
+    $(\'#stat\').highcharts({
+        title: {
+            text: \'Overall Attendance\',
+            x: -20 //center
+        },
+        xAxis: {
+            categories: dates
+        },
+        yAxis: {
+            title: {
+                text: \'Number of Students (weekly)\'
+            },
+            plotLines: [{
+                value: 0,
+                width: 1,
+                color: \'#808080\'
+            }]
+        },
+        tooltip: {
+            valueSuffix: \'Weekly\'
+        },
+        legend: {
+            layout: \'vertical\',
+            align: \'right\',
+            verticalAlign: \'middle\',
+            borderWidth: 0	
+        },
+	series:[{
+	name: \'Course 1\',
+   	 data: number
+	}]
+    });
+});';
+echo '</script>';
+?>
 </div>
-	<div id="log_out">
+<div id = "personal_stat1" style = "min-width: 600px; height: 400px; margin: 0 auto"></div>
+<div id = "personal_stat2" style = "min-width: 600px; height: 400px; margin: 0 auto"></div>
+<div id = "personal_stat3" style = "min-width: 600px; height: 400px; margin: 0 auto"></div>
+			<div id="log_out">
 	<a href="logout.php">Log out</a>
+
 </body>
 </html>
