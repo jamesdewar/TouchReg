@@ -48,9 +48,6 @@ echo 'var dates = [];
 echo '</script>';
 ?>
 </div>
-<div id = "personal_stat1" style = "min-width: 600px; height: 400px; margin: 0 auto"></div>
-<div id = "personal_stat2" style = "min-width: 600px; height: 400px; margin: 0 auto"></div>
-<div id = "personal_stat3" style = "min-width: 600px; height: 400px; margin: 0 auto"></div>
 			<div id="log_out">
 	<a href="logout.php">Log out</a>
 

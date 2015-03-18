@@ -69,28 +69,139 @@ font-size: 1.2em;
 }
 #stat
 {
+display: none;
 position: absolute;
-left: 90%;
+left: 20%;
 top:20%;
 }
 
-#personal_stat1
+.personal_stat1
 {
+
 position: absolute;
-left:50%;
+left:20%;
 top: 13%;
-}
-
-#personal_stat2
+width:600px;
+height:400px;}
+.personal_stat2
 {
 position: absolute;
-left:50%;
+left:20%;
 top: 33%;
-}
+width:600px;
+height:400px;}
 
-#personal_stat3
+.personal_stat3
 {
 position: absolute;
-left:50%;
+width:600px;
+height:400px;
+left:20%;
 top: 53%;
 }
+.personal_stat4
+{
+width:600px;
+height:400px;position: absolute;
+left:20%;
+top: 53%;
+}
+#individual_courses1
+{
+display: none;
+}
+#individual_courses2
+{
+display: none;
+}
+#individual_courses3
+{
+display: none;
+}
+#individual_courses4
+{
+display: none;
+}
+
+
+#individual_courses5
+{
+display: none;
+}
+#individual_courses6
+{
+display: none;
+}
+
+
+#individual_courses7
+{
+display: none;
+}
+#individual_courses8
+{
+display: none;
+}
+
+
+#individual_courses9
+{
+display: none;
+}
+#individual_courses10
+{
+display: none;
+}
+
+
+#individual_courses11
+{
+display: none;
+}
+#individual_courses12
+{
+display: none;
+}
+
+
+#individual_courses13
+{
+display: none;
+}
+#individual_courses14
+{
+display: none;
+}
+#individual_courses15
+{
+display: none;
+}
+#individual_courses16
+{
+display: none;
+}
+
+
+#individual_courses17
+{
+display: none;
+}
+#individual_courses18
+{
+display: none;
+}
+
+
+#individual_courses19
+{
+display: none;
+}
+#individual_courses20
+{
+display: none;
+}
+
+
+
+
+

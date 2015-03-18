@@ -57,12 +57,14 @@ foreach($list_individual_student as $temp)
 echo '<!DOCTYPE html>
 <html>
 <head>
-        <title>Your Home Page</title>
-        <link href="css/home.css" rel="stylesheet" type="text/css">
-<script type="text/javascript" src="js/graph.js"></script>';
+<title>Your Home Page</title>
+<link href="css/home.css" rel="stylesheet" type="text/css">
+';
 
-echo "<script src=\"http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js\"></script><script src=\"http://code.highcharts.com/highcharts.js\"></script>
-<script src=\"http://code.highcharts.com/modules/exporting.js\"></script>";
+echo '<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script><script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/modules/exporting.js"></script>
+<script type="text/javascript" src="js/graph.js"></script>
+<script type="text/javascript" src="js/hiding.js"></script>';
 echo "
 </head>
 <body id=\"general\">";
@@ -81,7 +83,7 @@ for($i=0;$i<count($_SESSION["general_attendance"]); $i++){
 		array_push($list_of_students,$value);
 		//echo "$key,$value";
 	}
-	
+
 }
 //print_r($list_of_course_dates);
 //$list_of_course_dates_js = json_encode($list_of_course_dates);
@@ -89,8 +91,10 @@ for($i=0;$i<count($_SESSION["general_attendance"]); $i++){
 $_SESSION["general_attendance_course"] = $list_of_course_dates;
 $_SESSION["general_attendance_number"] = $list_of_students;
 echo "<div class = \"course_list\">";
+$temp_index = 1;
 foreach ($final_list as $t){
-	echo "<a href=\"\">".$t . "</a><br>";
+	echo '<div id="list_course'. $temp_index .'">'.$t .' </div><br>';
+	$temp_index++;
 }
 echo "</div>";
 echo "<div class = \"students\"> Students </div>";
@@ -99,81 +103,94 @@ echo "<div class = \"students\"> Students </div>";
 echo "<div class = \"student_list\">";
 $length = count($final_list_first_name);
 for($i = 0; $i<$length; $i++){
-	echo "<div id =\"$final_list_student_id[$i]\" class= \"clickable\"  data-id =\"$final_list_student_id[$i]\"> ".$final_list_first_name[$i] . " " . $final_list_last_name[$i] . "<br></div>";
+	echo "<div id =\"$final_list_student_id[$i]\"> ".$final_list_first_name[$i] . " " . $final_list_last_name[$i] . "<br></div>";
 }
 echo "</div>";
 //Testing individual array
-$query = "SELECT DISTINCT course_id from Attendance where student_id=1 ORDER BY course_id ASC";
-$result = mysqli_query($dbc,$query);
-$list_ind_courses = array();
-while ($row = mysqli_fetch_array($result,MYSQLI_ASSOC))
-{       
-	$list_ind_courses[] = $row;
-}
-//echo $list_ind_courses[0]['course_id'];
-//print_r($list_ind_courses);
-$final_ind_attendance = array();
 $script_to_be_sent = "";
-for ($i=0;$i<count($list_ind_courses);$i++)
+for($z=0; $z<count($final_list_student_id);$z++)
 {
-	$course_id = $list_ind_courses[$i]['course_id'];
-	$query_timestamps = "SELECT timestamp from Attendance where student_id=1  and course_id = '$course_id'";
-	$individual_attendance_record = array();
-	$all_attendance_timestamp = array();
-	$overall_ind_attendance = array();
-	$result_timestamp = mysqli_query($dbc,$query_timestamps);
-	while ($row =  mysqli_fetch_array($result_timestamp,MYSQLI_ASSOC))
-	{
-		array_push($all_attendance_timestamp,$row);
+	$query = "SELECT DISTINCT course_id from Attendance where student_id='$final_list_student_id[$z]' ORDER BY course_id ASC";
+	$result = mysqli_query($dbc,$query);
+	$list_ind_courses = array();
+	while ($row = mysqli_fetch_array($result,MYSQLI_ASSOC))
+	{       
+		$list_ind_courses[] = $row;
 	}
+	//echo $list_ind_courses[0]['course_id'];
+	//print_r($list_ind_courses);
+	$final_ind_attendance = array();
+	$individual_courses_seperator =  '<div id = "individual_courses'.$final_list_student_id[$z].'">';
+	
+	for ($i=0;$i<count($list_ind_courses);$i++)
+	{
+		if($i == 0)
+		{
+		$script_to_be_sent .= '<div id = "individual_courses'.$final_list_student_id[$z].'">';
+		}
+		$course_id = $list_ind_courses[$i]['course_id'];
+		$query_timestamps = "SELECT timestamp from Attendance where student_id='$final_list_student_id[$z]'  and course_id = '$course_id'";
+		$individual_attendance_record = array();
+		$all_attendance_timestamp = array();
+		$overall_ind_attendance = array();
+		$result_timestamp = mysqli_query($dbc,$query_timestamps);
+		while ($row =  mysqli_fetch_array($result_timestamp,MYSQLI_ASSOC))
+		{
+			array_push($all_attendance_timestamp,$row);
+		}
 
-	$individual_attendance_record = attendance_check($course_id,$all_attendance_timestamp);
-//	print_r($individual_attendance_record);	
-	unset($all_attendance_timestamp);
-	$overall_ind_attendance = getting_timetable($course_id);
-	$offset = 0;	
-	$top = $i +1;
-	$script_to_be_sent .= '<div id = "personal_stat'.$top.'" style="min-width: 600px; height: 400px; margin: 0 auto"><script>var dates'.$top.' = []; 
-        var number'.$top.' = []; 
-        number'.$top.' = '.json_encode($individual_attendance_record).'; 
-        dates'.$top.' = '.json_encode($overall_ind_attendance).';
-        $(function () {
-    $(\'#personal_stat'.$top.'\').highcharts({
-        title: {
-            text: \'Overall Attendance\',
-            x: -20 //center
-        },
-        xAxis: {
-            categories: dates'.$top.'
-        },
-        yAxis: {
-            title: {
-                text: \'Number of Students (weekly)\'
-            },
-            plotLines: [{
-                value: 0,
-                width: 1,
-                color: \'#808080\'
-            }]
-        },
-        tooltip: {
-            valueSuffix: \'Weekly\'
-        },
-        legend: {
-            layout: \'vertical\',
-            align: \'right\',
-            verticalAlign: \'middle\',
-            borderWidth: 0      
-        },
-        series:[{
-        name: \'Course '.$top.'\',
-         data: number'.$top.'
-        }]
-    });
+		$individual_attendance_record = attendance_check($course_id,$all_attendance_timestamp);
+		//	print_r($individual_attendance_record);	
+		unset($all_attendance_timestamp);
+		$overall_ind_attendance = getting_timetable($course_id);
+		$offset = 0;	
+		$top = $i +1;
+		$script_to_be_sent .= '<div id = "personal_stat'.$final_list_student_id[$z].''.$top.'" style="width: 600px; height: 400px; margin: 0 auto"><script>var dates'.$top.' = []; 
+		var number'.$top.' = []; 
+		number'.$top.' = '.json_encode($individual_attendance_record).'; 
+		dates'.$top.' = '.json_encode($overall_ind_attendance).';
+		$(function () {
+				$(\'#personal_stat'.$final_list_student_id[$z].''.$top.'\').highcharts({
+title: {
+text: \'Overall Attendance\',
+x: -20 //center
+},
+xAxis: {
+categories: dates'.$top.'
+},
+yAxis: {
+title: {
+text: \'Number of Students (weekly)\'
+},
+plotLines: [{
+value: 0,
+width: 1,
+color: \'#808080\'
+}]
+},
+tooltip: {
+valueSuffix: \'Weekly\'
+},
+legend: {
+layout: \'vertical\',
+	align: \'right\',
+	verticalAlign: \'middle\',
+	borderWidth: 0      
+	},
+series:[{
+name: \'Course '.$top.'\',
+      data: number'.$top.'
+       }]
+});
 });
 </script></div>'; 
-	unset($individual_attendance_record);
-	unset($overall_ind_attendance);
+unset($individual_attendance_record);
+unset($overall_ind_attendance);
+if ($i == count($list_ind_courses)-1)
+{
+$script_to_be_sent .= '</div>';
+}
+}
 }
 echo $script_to_be_sent;
 function getting_timetable($course_num)
@@ -194,7 +211,7 @@ function getting_timetable($course_num)
 		//Creating an array of attendance over the whole time period
 		$format_date = $time_in->format('Y-m-d');
 		$final_attendance_record[] = $format_date;
-	
+
 	}
 	return $final_attendance_record;
 }
