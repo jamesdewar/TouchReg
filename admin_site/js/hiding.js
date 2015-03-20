@@ -1,12 +1,33 @@
 $(document).ready(function(){
 		$("#list_course1").click(function(){
-			$("#stat").toggle();
+			$("#stat").toggle();;
+			$("#individual_courses1").hide();
+			$("#individual_courses2").hide();
+			$("#individual_courses3").hide();
+			$("#individual_courses4").hide();
+			$("#individual_courses5").hide();
+			$("#individual_courses6").hide();
+			$("#individual_courses7").hide();
+			$("#individual_courses8").hide();
+			$("#individual_courses9").hide();
+			$("#individual_courses10").hide();
+			$("#individual_courses11").hide();
+			$("#individual_courses12").hide();
+			$("#individual_courses13").hide();
+			$("#individual_courses14").hide();
+			$("#individual_courses15").hide();
+			$("#individual_courses16").hide();
+			$("#individual_courses17").hide();
+			$("#individual_courses18").hide();
+			$("#individual_courses19").hide();
+			$("#individual_courses20").hide();
+
 		});
 });
 $(document).ready(function(){
 		$("#1").click(function(){
 			$("#stat").hide();
-			$("#individual_courses1").toggle();
+			$("#individual_courses1").show();
 			$("#individual_courses2").hide();
 			$("#individual_courses3").hide();
 			$("#individual_courses4").hide();
@@ -189,7 +210,7 @@ $(document).ready(function(){
 			$("#individual_courses19").hide();
 			$("#individual_courses20").hide();
 		});
-$});
+});
 
 (document).ready(function(){
 		$("#8").click(function(){
