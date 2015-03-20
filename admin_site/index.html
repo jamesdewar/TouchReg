@@ -1,4 +1,11 @@
 
+<!-----
+This is the sign-in page for our admin website
+The styling and the css were adapted from the template
+in the following website : http://www.freshdesignweb.com/css-login-form-templates.html
+
+
+	---->
 <!DOCTYPE html>
 <html>
 <head>
@@ -7,16 +14,20 @@
 		<link href="css/style.css" rel='stylesheet' type='text/css' />
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link href='http://fonts.googleapis.com/css?family=Open+Sans:600italic,400,300,600,700' rel='stylesheet' type='text/css'>
-		<!--//webfonts-->
+		
 </head>
 <body>
-	 <!-----start-main---->
+
 	 <div class="main">
 		<div class="login-form">
 			<h1>Admin Login</h1>
 					<div class="head">
 						<img src="images/user.png" alt=""/>
 					</div>
+
+			<!--
+			Below is the input field for the login. The relevant file to connect to "connection.php" 
+			---->
 				<form method="POST" action="connection.php">
 						<input type="text" class="text" name ="email" value="USERNAME" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'USERNAME';}" >
 						<input type="password" value="Password" name="pass" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'Password';}">
