@@ -1,10 +1,10 @@
 <!--
-	This is the main file of the admin website. Most/ALL of the logic and DISPLAY is programmed in here
-	Here is a list of url/websites which were used to help build this website
-	ALOT of the implementations are my own and I will explain in detail so the reader can follow along
-	URL: 
-	- http://openenergymonitor.org/emon/node/107 -- was used but not extensive, only ides
-	- www.w3schools.com
+This is the main file of the admin website. Most/ALL of the logic and DISPLAY is programmed in here
+Here is a list of url/websites which were used to help build this website
+ALOT of the implementations are my own and I will explain in detail so the reader can follow along
+URL: 
+- http://openenergymonitor.org/emon/node/107 -- was used but not extensive, only ides
+- www.w3schools.com
 
 ---->
 
@@ -86,10 +86,20 @@ echo '<!DOCTYPE html>
 echo '<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script><script src="http://code.highcharts.com/highcharts.js"></script>
 <script src="http://code.highcharts.com/modules/exporting.js"></script>
 <script type="text/javascript" src="js/graph.js"></script>
-<script type="text/javascript" src="js/hiding.js"></script>';
+<script type="text/javascript" src="js/hiding.js"></script>
+<meta charset="UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
+<link rel="stylesheet" type="text/css" href="css/normalize.css" />
+<link rel="stylesheet" type="text/css" href="css/demo.css" />
+<link rel="stylesheet" type="text/css" href="css/component.css" />
+<!--[if IE]>
+<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+';
+
 echo "
 </head>
-<body id=\"general\">";
+<body>";
 echo " <div class =\"headbar\"></div>";
 echo " <div class=\"head\"><img src=\"images/user.png\"/> </div>";
 echo "<div class= \"title\"> Hello, " .$login . "</div>";
@@ -104,7 +114,7 @@ $list_of_students = array(); //Array to hold list of students in a specific cour
 // The genereal attendance SESSION variable as been defined in the STATS.PHP file
 // It is a associative array of lectures dates and number of STUDENTS who showed up
 for($i=0;$i<count($_SESSION["general_attendance"]); $i++){
-//Putting into the array the contents of the general attendance variable.
+	//Putting into the array the contents of the general attendance variable.
 	// Arrays are easier to work with AND are necessary for the JS library we are going through
 
 	foreach ( $_SESSION["general_attendance"][$i] as $key => $value){
@@ -136,11 +146,62 @@ for($i = 0; $i<$length; $i++){
 }
 echo "</div>";
 
+echo '
+<div id= "tableGraph">
+<div id = "stat" style="min-width: 600px; height: 400px;">
 
+<script>
+var dates = []; 
+var number = []; 
+number = '.json_encode($_SESSION['general_attendance_number']).'; 
+dates = '.json_encode($_SESSION['general_attendance_course']).';
+$(function () {
+		$(\'#stat\').highcharts({
+chart: {
+type: \'column\'
+},	
+title: {
+text: \'Overall Attendance\',
+x: -20 //center
+},
+xAxis: {
+categories: dates
+},
+yAxis: {
+min: 0,    
+title: {
+text: \'Number of Students (weekly)\'
+},
+},
+plotOptions: {
+bar: {
+dataLabels: {
+enabled: true
+	    }
+     }
+	     },
+tooltip: {
+valueSuffix: \' Weekly\'
+	 },
+legend: {
+layout: \'vertical\',
+	align: \'right\',
+	verticalAlign: \'middle\',
+	borderWidth: 0	
+	},
+series:[{
+name: \'Course 1\',
+      data: number
+       }]
+});
+});
+</script>
+</div>
+';
 
 //This Part of the Script is for dealing with individual attendance.
 // that is the attendance performance of EACH student in EACH of the classes he is registered on
-
+$attendance_table = array();
 $script_to_be_sent = "";
 for($z=0; $z<count($final_list_student_id);$z++)
 {
@@ -151,11 +212,19 @@ for($z=0; $z<count($final_list_student_id);$z++)
 	{       
 		$list_ind_courses[] = $row;
 	}
-	//echo $list_ind_courses[0]['course_id'];
-	//print_r($list_ind_courses);
+	$list_ind_course_name = array();
+	for ($r=0;$r<count($list_ind_courses);$r++)
+	{ 
+		$course_id = $list_ind_courses[$r]['course_id'];
+		$query_course_name = "SELECT Course_Name from Courses where Course_id = '$course_id'";
+		$result_course_name = mysqli_query($dbc,$query_course_name);
+		$row_result = mysqli_fetch_array($result_course_name,MYSQLI_ASSOC);
+		$row_course_name = $row_result['Course_Name'];
+		array_push($list_ind_course_name,$row_course_name);	
+	}
 	$final_ind_attendance = array();
 	$individual_courses_seperator =  '<div id = "individual_courses'.$final_list_student_id[$z].'">';
-	
+
 	for ($i=0;$i<count($list_ind_courses);$i++)
 	{
 		if($i == 0)
@@ -184,48 +253,99 @@ for($z=0; $z<count($final_list_student_id);$z++)
 		number'.$top.' = '.json_encode($individual_attendance_record).'; 
 		dates'.$top.' = '.json_encode($overall_ind_attendance).';
 		$(function () {
-			$(\'#personal_stat'.$final_list_student_id[$z].''.$top.'\').highcharts({
-				title: {
-					text: \'Overall Attendance\',
-					x: -20 //center
-				},
-				xAxis: {
-					categories: dates'.$top.'
-				},
-				yAxis: {
-					title: {
-						text: \'Number of Students (weekly)\'
-					},
-					plotLines: [{
-						value: 0,
-						width: 1,
-						color: \'#808080\'
-					}]
-				},
-				tooltip: {
-					valueSuffix: \'Weekly\'
-				},
-				legend: {
-					layout: \'vertical\',
-					align: \'right\',
-					verticalAlign: \'middle\',
-					borderWidth: 0      
-				},
-				series:[{
-					name: \'Course '.$top.'\',
-					data: number'.$top.'
-				}]
-			});
+				$(\'#personal_stat'.$final_list_student_id[$z].''.$top.'\').highcharts({
+chart:{
+type: \'column\'
+},
+title: {
+text: \''.$list_ind_course_name[$i].'\',
+x: -20 //center
+},
+xAxis: {
+categories: dates'.$top.'
+},
+yAxis: {
+title: {
+text: \'Number of Students (weekly)\'
+},
+},
+plotOptions: {
+bar: {
+dataLabels: {
+enabled: true
+}
+}
+},
+tooltip: {
+valueSuffix: \'Weekly\'
+	 },
+legend: {
+layout: \'vertical\',
+	align: \'right\',
+	verticalAlign: \'middle\',
+	borderWidth: 0      
+	},
+series:[{
+name: \'Course '.$top.'\',
+      data: number'.$top.'
+       }]
+});
 });
 </script></div>'; 
-unset($individual_attendance_record);
-unset($overall_ind_attendance);
+
+//unset($list_ind_course_name);
 if ($i == count($list_ind_courses)-1)
 {
 	$script_to_be_sent .= '</div>';
 }
 }
+$attendance_table[$final_list_student_id[$z]] = $individual_attendance_record;
+unset($individual_attendance_record);unset($overall_ind_attendance);
+
 }
+//The styling and layout for the table 
+echo'
+<div class="container">
+<div class="component">
+<table>
+<thead>
+<tr>
+<th>Student Names</th>
+';
+foreach($_SESSION["general_attendance_course"] as $dates)
+{
+echo '<th>'.$dates.'</th>';
+}
+echo '
+</tr>
+</thead>
+<tbody>';
+for($pip=0;$pip<count($final_list_first_name);$pip++)
+{
+echo '<tr><th>'.$final_list_first_name[$pip].', '.$final_list_last_name[$pip].'</th>';
+foreach($attendance_table[$final_list_student_id[$pip]] as $toto)
+{
+if ($toto == 1)
+{
+echo '<td style="color:green;">&#x2714 </td>';
+}
+else 
+{
+echo '<td style="color:red;">&#x2716</td>';
+}
+}
+echo '</tr>';
+}
+//<td>52</td>
+echo '
+</tbody>
+</table>
+</div>
+</div>
+</div>';
+
+
+
 echo $script_to_be_sent;
 function getting_timetable($course_num)
 {

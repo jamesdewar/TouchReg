@@ -1,6 +1,6 @@
 $(document).ready(function(){
 		$("#list_course1").click(function(){
-			$("#stat").toggle();;
+			$("#tableGraph").toggle();
 			$("#individual_courses1").hide();
 			$("#individual_courses2").hide();
 			$("#individual_courses3").hide();
@@ -26,7 +26,7 @@ $(document).ready(function(){
 });
 $(document).ready(function(){
 		$("#1").click(function(){
-			$("#stat").hide();
+			$("#tableGraph").hide();
 			$("#individual_courses1").show();
 			$("#individual_courses2").hide();
 			$("#individual_courses3").hide();
@@ -53,7 +53,7 @@ $(document).ready(function(){
 
 $(document).ready(function(){
 		$("#2").click(function(){
-			$("#stat").hide();
+			$("#tableGraph").hide();
 			$("#individual_courses1").hide();
 			$("#individual_courses2").show();
 			$("#individual_courses3").hide();
@@ -80,7 +80,7 @@ $(document).ready(function(){
 
 $(document).ready(function(){
 		$("#3").click(function(){
-			$("#stat").hide();
+			$("#tableGraph").hide();
 			$("#individual_courses1").hide();
 			$("#individual_courses2").hide();
 			$("#individual_courses3").show();
@@ -107,7 +107,7 @@ $(document).ready(function(){
 
 $(document).ready(function(){
 		$("#4").click(function(){
-			$("#stat").hide();
+			$("#tableGraph").hide();
 			$("#individual_courses1").hide();
 			$("#individual_courses2").hide();
 			$("#individual_courses3").hide();
@@ -134,7 +134,7 @@ $(document).ready(function(){
 
 $(document).ready(function(){
 		$("#5").click(function(){
-			$("#stat").hide();
+			$("#tableGraph").hide();
 			$("#individual_courses1").hide();
 			$("#individual_courses2").hide();
 			$("#individual_courses3").hide();
@@ -160,7 +160,7 @@ $(document).ready(function(){
 });
 $(document).ready(function(){
 		$("#6").click(function(){
-			$("#stat").hide();
+			$("#tableGraph").hide();
 			$("#individual_courses1").hide();
 			$("#individual_courses2").hide();
 			$("#individual_courses3").hide();
@@ -188,7 +188,7 @@ $(document).ready(function(){
 
 $(document).ready(function(){
 		$("#7").click(function(){
-			$("#stat").hide();
+			$("#tableGraph").hide();
 			$("#individual_courses1").hide();
 			$("#individual_courses2").hide();
 			$("#individual_courses3").hide();
@@ -214,7 +214,7 @@ $(document).ready(function(){
 
 (document).ready(function(){
 		$("#8").click(function(){
-			$("#stat").hide();
+			$("#tableGraph").hide();
 			$("#individual_courses1").hide();
 			$("#individual_courses2").hide();
 			$("#individual_courses3").hide();
@@ -240,7 +240,7 @@ $(document).ready(function(){
 		});
 $(document).ready(function(){
 		$("#9").click(function(){
-			$("#stat").hide();
+			$("#tableGraph").hide();
 			$("#individual_courses1").hide();
 			$("#individual_courses2").hide();
 			$("#individual_courses3").hide();
@@ -267,7 +267,7 @@ $(document).ready(function(){
 
 $(document).ready(function(){
 		$("#10").click(function(){
-			$("#stat").hide();
+			$("#tableGraph").hide();
 			$("#individual_courses1").hide();
 			$("#individual_courses2").hide();
 			$("#individual_courses3").hide();
@@ -293,7 +293,7 @@ $(document).ready(function(){
 
 $(document).ready(function(){
 		$("#11").click(function(){
-			$("#stat").hide();
+			$("#tableGraph").hide();
 			$("#individual_courses1").hide();
 			$("#individual_courses2").hide();
 			$("#individual_courses3").hide();
@@ -320,7 +320,7 @@ $(document).ready(function(){
 
 $(document).ready(function(){
 		$("#12").click(function(){
-			$("#stat").hide();
+			$("#tableGraph").hide();
 			$("#individual_courses1").hide();
 			$("#individual_courses2").hide();
 			$("#individual_courses3").hide();
@@ -347,7 +347,7 @@ $(document).ready(function(){
 
 $(document).ready(function(){
 		$("#13").click(function(){
-			$("#stat").hide();
+			$("#tableGraph").hide();
 			$("#individual_courses1").hide();
 			$("#individual_courses2").hide();
 			$("#individual_courses3").hide();
@@ -374,7 +374,7 @@ $(document).ready(function(){
 
 $(document).ready(function(){
 		$("#14").click(function(){
-			$("#stat").hide();
+			$("#tableGraph").hide();
 			$("#individual_courses1").hide();
 			$("#individual_courses2").hide();
 			$("#individual_courses3").hide();
@@ -400,7 +400,7 @@ $(document).ready(function(){
 
 $(document).ready(function(){
 		$("#15").click(function(){
-			$("#stat").hide();
+			$("#tableGraph").hide();
 			$("#individual_courses1").hide();
 			$("#individual_courses2").hide();
 			$("#individual_courses3").hide();
@@ -427,7 +427,7 @@ $(document).ready(function(){
 
 $(document).ready(function(){
 		$("#16").click(function(){
-			$("#stat").hide();
+			$("#tableGraph").hide();
 			$("#individual_courses1").hide();
 			$("#individual_courses2").hide();
 			$("#individual_courses3").hide();
@@ -454,7 +454,7 @@ $(document).ready(function(){
 
 $(document).ready(function(){
 		$("#17").click(function(){
-			$("#stat").hide();
+			$("#tableGraph").hide();
 			$("#individual_courses1").hide();
 			$("#individual_courses2").hide();
 			$("#individual_courses3").hide();
@@ -481,7 +481,7 @@ $(document).ready(function(){
 
 $(document).ready(function(){
 		$("#18").click(function(){
-			$("#stat").hide();
+			$("#tableGraph").hide();
 			$("#individual_courses1").hide();
 			$("#individual_courses2").hide();
 			$("#individual_courses3").hide();
@@ -508,7 +508,7 @@ $(document).ready(function(){
 
 $(document).ready(function(){
 		$("#19").click(function(){
-			$("#stat").hide();
+			$("#tableGraph").hide();
 			$("#individual_courses1").hide();
 			$("#individual_courses2").hide();
 			$("#individual_courses3").hide();
@@ -535,7 +535,7 @@ $(document).ready(function(){
 
 $(document).ready(function(){
 		$("#20").click(function(){
-			$("#stat").hide();
+			$("#tableGraph").hide();
 			$("#individual_courses1").hide();
 			$("#individual_courses2").hide();
 			$("#individual_courses3").hide();
