@@ -1,3 +1,5 @@
+
+
 <?php
 include('session.php');
 ?>
@@ -9,3 +11,9 @@ include('session.php');
 
 </body>
 </html>
+
+
+<!--
+THIS file is VERY short because 99% of the content is diplayed from the session.php file.
+All we need to do is include the session file and let that file do the work.
+---->

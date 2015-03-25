@@ -1,3 +1,16 @@
+
+/* 
+This script is jquery, it used to change the appearance of the main page.
+using the jquery .click() method we choose to either  .show() or .hide() html elements
+We use these methods for the display of the individual stats. 
+As you can see it is a very repetitive script but necessary.
+It is long because of the amounts of students registered in the database.
+
+
+
+*/
+
+
 $(document).ready(function(){
 		$("#list_course1").click(function(){
 			$("#tableGraph").show();

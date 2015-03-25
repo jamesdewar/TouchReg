@@ -10,10 +10,16 @@ URL:
 
 <?php
 // This php file was made with the help of: http://www.formget.com/login-form-in-php/
-include 'stats.php';
+
+include 'stats.php'; // this script is used to create the Course statistics
+
+//Connecting to the databse
 $dbc = mysqli_connect('localhost', 'ma303jd', 'james23','ma303jd_admin');
 
+//this array of Hex values is used to vary the colors of the bar charts
+
 $colors_of_charts = array("#808080","#FD7C6E","#1F75FE","#CB4154","#00CC99");
+
 session_start();// Starting Session
 
 // Storing Session -- If the user is not connected, redirct him to the Login page
@@ -61,7 +67,7 @@ $final_list_first_name = array(); //array of first name of the student on that c
 $final_list_last_name = array();//array of Last name of the student on that course
 $final_list_student_id = array();//array of student_id of the student on that course
 
-//Query to POPULATE the 3 arrays described above. 
+//Query to POPULATE the 3 arrays defined above. 
 foreach($list_individual_student as $temp)
 {
 	$query_student_name = mysqli_query($dbc,"Select First_Name,Last_Name,Student_ID from Students where Student_id = '$temp'");
@@ -111,7 +117,7 @@ echo "<div class = \"courses\"> Courses </div>";
 $list_of_course_dates = array(); // array to hold list of dates in a specific course
 $list_of_students = array(); //Array to hold list of students in a specific course
 
-// The genereal attendance SESSION variable as been defined in the STATS.PHP file
+// The genereal attendance SESSION variable has been defined in the STATS.PHP file
 // It is a associative array of lectures dates and number of STUDENTS who showed up
 for($i=0;$i<count($_SESSION["general_attendance"]); $i++){
 	//Putting into the array the contents of the general attendance variable.
@@ -146,6 +152,8 @@ for($i = 0; $i<$length; $i++){
 }
 echo "</div>";
 
+//This is the js for the overall attendance graph
+//We use the Session varaibles to poupulate. I read about the json_encode method here: http://php.net/manual/en/function.json-encode.php
 echo '
 <div id= "tableGraph">
 <div id = "stat" style="min-width: 600px; height: 400px;">
@@ -156,44 +164,44 @@ var number = [];
 number = '.json_encode($_SESSION['general_attendance_number']).'; 
 dates = '.json_encode($_SESSION['general_attendance_course']).';
 $(function () {
-		$(\'#stat\').highcharts({
-chart: {
-type: \'column\'
-},	
-title: {
-text: \'Overall Attendance\',
-x: -20 //center
-},
-xAxis: {
-categories: dates
-},
-yAxis: {
-min: 0,    
-title: {
-text: \'Number of Students (weekly)\'
-},
-},
-plotOptions: {
-bar: {
-dataLabels: {
-enabled: true
-	    }
-     }
-	     },
-tooltip: {
-valueSuffix: \' Weekly\'
-	 },
-legend: {
-layout: \'vertical\',
-	align: \'right\',
-	verticalAlign: \'middle\',
-	borderWidth: 0	
-	},
-series:[{
-name: \'Course 1\',
-      data: number
-       }]
-});
+	$(\'#stat\').highcharts({
+		chart: {
+			type: \'column\'
+		},	
+		title: {
+			text: \'Overall Attendance\',
+			x: -20 //center
+		},
+		xAxis: {
+			categories: dates
+		},
+		yAxis: {
+			min: 0,    
+			title: {
+				text: \'Number of Students (weekly)\'
+			},
+		},
+		plotOptions: {
+			bar: {
+				dataLabels: {
+					enabled: true
+				}
+			}
+		},
+		tooltip: {
+			valueSuffix: \' Weekly\'
+		},
+		legend: {
+			layout: \'vertical\',
+			align: \'right\',
+			verticalAlign: \'middle\',
+			borderWidth: 0	
+		},
+		series:[{
+			name: \'Course 1\',
+			data: number
+		}]
+	});
 });
 </script>
 </div>
@@ -202,17 +210,23 @@ name: \'Course 1\',
 //This Part of the Script is for dealing with individual attendance.
 // that is the attendance performance of EACH student in EACH of the classes he is registered on
 $attendance_table = array();
-$script_to_be_sent = "";
+$script_to_be_sent = ""; // the string that will be interpreted by the browser.
+
+//This first LOOP is meant the go through the every student registered on that course
 for($z=0; $z<count($final_list_student_id);$z++)
 {
+	//query to slecto the courses  the student is registered on
 	$query = "SELECT DISTINCT course_id from Attendance where student_id='$final_list_student_id[$z]' ORDER BY course_id ASC";
 	$result = mysqli_query($dbc,$query);
 	$list_ind_courses = array();
+	//Populate array of course the studen is registered on
 	while ($row = mysqli_fetch_array($result,MYSQLI_ASSOC))
 	{       
 		$list_ind_courses[] = $row;
 	}
 	$list_ind_course_name = array();
+
+	//loop to get the NAME of the courses he is attending. The two method (one above, one below) could not be merged into one
 	for ($r=0;$r<count($list_ind_courses);$r++)
 	{ 
 		$course_id = $list_ind_courses[$r]['course_id'];
@@ -222,87 +236,105 @@ for($z=0; $z<count($final_list_student_id);$z++)
 		$row_course_name = $row_result['Course_Name'];
 		array_push($list_ind_course_name,$row_course_name);	
 	}
-	$final_ind_attendance = array();
-	$individual_courses_seperator =  '<div id = "individual_courses'.$final_list_student_id[$z].'">';
 
+	$final_ind_attendance = array();
+	//$individual_courses_seperator =  '<div id = "individual_courses'.$final_list_student_id[$z].'">';
+
+//Now that we know what courses the student attends we can get the stats for EACH one, this is the use of this loop
 	for ($i=0;$i<count($list_ind_courses);$i++)
 	{
+		// We start populating the string/script that will be sent to the browser and will build the graphs
 		if($i == 0)
 		{
 			$script_to_be_sent .= '<div id = "individual_courses'.$final_list_student_id[$z].'"><h1 class= "student_name_header">'.$final_list_first_name[$z].' '.$final_list_last_name[$z].'</h1>';
 		}
+		//query to select the timestampt for that student in a specific course
 		$course_id = $list_ind_courses[$i]['course_id'];
 		$query_timestamps = "SELECT timestamp from Attendance where student_id='$final_list_student_id[$z]'  and course_id = '$course_id'";
 		$individual_attendance_record = array();
 		$all_attendance_timestamp = array();
 		$overall_ind_attendance = array();
 		$result_timestamp = mysqli_query($dbc,$query_timestamps);
+
+		// populating array of results from that query. THIS ARRAY HOLDS TIMESTAMP OF THE STUDENT IN A SPECIFIC COURSE
 		while ($row =  mysqli_fetch_array($result_timestamp,MYSQLI_ASSOC))
 		{
 			array_push($all_attendance_timestamp,$row);
 		}
-
+		//we can now call the attendance_check method which is defined below. Learn more about it where is it defined
 		$individual_attendance_record = attendance_check($course_id,$all_attendance_timestamp);
-		//	print_r($individual_attendance_record);	
+		
+		//We can empty the array to use in the next iteration of the loop.	
 		unset($all_attendance_timestamp);
+		// We now make a call to the getting_timetable method below .  Learn more about it where is it defined
 		$overall_ind_attendance = getting_timetable($course_id);
 		$offset = 0;	
-		$top = $i +1;
-		$individual_color = rand(0,4);
+		$top = $i +1; // Used to create unique id in the css
+		$individual_color = rand(0,4); //random int. used for the colors of the graphs
+
+// We now can build the graph as we hold the information in the form of 2 arrays.
+//The string is appended each loop, so new scripts are added everytime the loop goes around.
+// the string that is built in the end will hold ALL the info for ALL the graphs of ALL the students
+//These graphs we built using High charts library. Please find more info here: http://www.highcharts.com/
+// Other links that helped me build these graphs. 
+// - http://jsfiddle.net/gh/get/jquery/1.9.1/highslide-software/highcharts.com/tree/master/samples/highcharts/demo/line-basic/
+
+
 		$script_to_be_sent .= '<div id = "personal_stat'.$final_list_student_id[$z].''.$top.'" style="width: 600px; height: 400px; margin: 0 auto"><script>var dates'.$top.' = []; 
 		var number'.$top.' = []; 
 		number'.$top.' = '.json_encode($individual_attendance_record).'; 
 		dates'.$top.' = '.json_encode($overall_ind_attendance).';
 		$(function () {
-				$(\'#personal_stat'.$final_list_student_id[$z].''.$top.'\').highcharts({
-chart:{
-type: \'column\'
-},
-title: {
-text: \''.$list_ind_course_name[$i].'\',
-x: -20 //center
-},
-xAxis: {
-categories: dates'.$top.'
-},
-yAxis: {
-title: {
-text: \'Number of Students (weekly)\'
-},
-},
-plotOptions: {
-bar: {
-dataLabels: {
-enabled: true
-}
-}
-},
-tooltip: {
-valueSuffix: \'Weekly\'
-	 },
-legend: {
-layout: \'vertical\',
-	align: \'right\',
-	verticalAlign: \'middle\',
-	borderWidth: 0      
-	},
-series:[{
-color : \''.$colors_of_charts[$individual_color].'\',
-name: \'Course '.$top.'\',
-      data: number'.$top.'
-       }]
-});
+			$(\'#personal_stat'.$final_list_student_id[$z].''.$top.'\').highcharts({
+				chart:{
+					type: \'column\'
+				},
+				title: {
+					text: \''.$list_ind_course_name[$i].'\',
+					x: -20 //center
+				},
+				xAxis: {
+					categories: dates'.$top.'
+				},
+				yAxis: {
+					title: {
+						text: \'Number of Students (weekly)\'
+					},
+				},
+				plotOptions: {
+					bar: {
+						dataLabels: {
+							enabled: true
+						}
+					}
+				},
+				tooltip: {
+					valueSuffix: \'Weekly\'
+				},
+				legend: {
+					layout: \'vertical\',
+					align: \'right\',
+					verticalAlign: \'middle\',
+					borderWidth: 0      
+				},
+				series:[{
+					color : \''.$colors_of_charts[$individual_color].'\',
+					name: \'Course '.$top.'\',
+					data: number'.$top.'
+				}]
+			});
 });
 </script></div>'; 
 
-unset($individual_color);
+unset($individual_color); //unset color so the grpahs have different colors
 if ($i == count($list_ind_courses)-1)
 {
 	$script_to_be_sent .= '</div>';
 }
 }
-$attendance_table[$final_list_student_id[$z]] = $individual_attendance_record;
-unset($individual_attendance_record);unset($overall_ind_attendance);
+$attendance_table[$final_list_student_id[$z]] = $individual_attendance_record; // Array for the table below
+unset($individual_attendance_record);
+unset($overall_ind_attendance);
 
 }
 //The styling and layout for the table 
@@ -312,33 +344,37 @@ echo'
 <table>
 <thead>
 <tr>
-<th>Student Names</th>
-';
+<th>Student Names</th>';
+
+//Looping through the dates array for the course the table is for
 foreach($_SESSION["general_attendance_course"] as $dates)
 {
-echo '<th>'.$dates.'</th>';
+	echo '<th>'.$dates.'</th>';
 }
 echo '
 </tr>
 </thead>
 <tbody>';
+
+// this loop goes through every student registered on the course so we can get his info
 for($pip=0;$pip<count($final_list_first_name);$pip++)
 {
-echo '<tr><th>'.$final_list_first_name[$pip].', '.$final_list_last_name[$pip].'</th>';
-foreach($attendance_table[$final_list_student_id[$pip]] as $toto)
-{
-if ($toto == 1)
-{
-echo '<td style="color:green;">&#x2714 </td>';
+	echo '<tr><th>'.$final_list_first_name[$pip].', '.$final_list_last_name[$pip].'</th>';
+
+	//go through his attendance records and dislay an X or a tick 
+	foreach($attendance_table[$final_list_student_id[$pip]] as $toto)
+	{
+		if ($toto == 1)
+		{
+			echo '<td style="color:green;">&#x2714 </td>';
+		}
+		else 
+		{
+			echo '<td style="color:red;">&#x2716</td>';
+		}
+	}
+	echo '</tr>';
 }
-else 
-{
-echo '<td style="color:red;">&#x2716</td>';
-}
-}
-echo '</tr>';
-}
-//<td>52</td>
 echo '
 </tbody>
 </table>
@@ -346,9 +382,11 @@ echo '
 </div>
 </div>';
 
-
-
+//After all the loop and function calls we can finally print the string to the browser
 echo $script_to_be_sent;
+
+
+// This method is used to return and array of timestamps of lectures for a given course 
 function getting_timetable($course_num)
 {
 	$list_lectures = array();
@@ -365,16 +403,20 @@ function getting_timetable($course_num)
 
 
 		//Creating an array of attendance over the whole time period
-		$format_date = $time_in->format('Y-m-d');
+		$format_date = $time_in->format('Y-m-d'); // formatting the timestamp as we want to display
 		$final_attendance_record[] = $format_date;
 
 	}
-	return $final_attendance_record;
+	return $final_attendance_record; //return array of timestamps
 }
+
+//this method is meant to take in a course number and students timestamps and return an array of representing the students attendance over 
+//the term period
+
 function attendance_check($course_num,$input)
 {
 	$dbc = mysqli_connect('localhost', 'ma303jd', 'james23','ma303jd_admin');
-	$final_attendance_record = array(0,0,0,0,0);
+	$final_attendance_record = array(0,0,0,0,0,0,0,0,0,0); // array of results initialised
 	$list_classes = array();
 	$temp_query = "SELECT time_in,time_out from Timetable where course_id= '$course_num'";
 	$query_attendance = mysqli_query($dbc,$temp_query);
@@ -383,22 +425,25 @@ function attendance_check($course_num,$input)
 
 		$list_classes[] = $row; 
 	}
-	//	print_r($list_classes);
+	//Now that we have an array representing the times the student attended class we can compare them with the times
+	// he should of been in class
 	for($k=0;$k<count($list_classes);$k++)
 	{
+		//times he should be in 
 		$time_in = new DateTime($list_classes[$k]['time_in']);
 		$time_out = new DateTime($list_classes[$k]['time_out']);
+		//looping over the student timestamps and checking they are in the lectures timeframe
 		foreach($input as $pop)
 		{
 			$encoded = new Datetime($pop['timestamp']);
 			if ($encoded > $time_in && $encoded < $time_out)
 			{
 
-				$final_attendance_record[$k] = 	1;
+				$final_attendance_record[$k] = 	1; //if yes, replace 0 with 1
 			}
 		}
 	}
-	return $final_attendance_record;
+	return $final_attendance_record; // return the Array
 }
 
 
