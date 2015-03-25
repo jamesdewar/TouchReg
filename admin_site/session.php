@@ -13,7 +13,7 @@ URL:
 include 'stats.php';
 $dbc = mysqli_connect('localhost', 'ma303jd', 'james23','ma303jd_admin');
 
-
+$colors_of_charts = array("#808080","#FD7C6E","#1F75FE","#CB4154","#00CC99");
 session_start();// Starting Session
 
 // Storing Session -- If the user is not connected, redirct him to the Login page
@@ -86,7 +86,7 @@ echo '<!DOCTYPE html>
 echo '<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script><script src="http://code.highcharts.com/highcharts.js"></script>
 <script src="http://code.highcharts.com/modules/exporting.js"></script>
 <script type="text/javascript" src="js/graph.js"></script>
-<script type="text/javascript" src="js/hiding.js"></script>
+<script type="text/javascript" src="js/hiding2.js"></script>
 <meta charset="UTF-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
 <link rel="stylesheet" type="text/css" href="css/normalize.css" />
@@ -229,7 +229,7 @@ for($z=0; $z<count($final_list_student_id);$z++)
 	{
 		if($i == 0)
 		{
-			$script_to_be_sent .= '<div id = "individual_courses'.$final_list_student_id[$z].'">';
+			$script_to_be_sent .= '<div id = "individual_courses'.$final_list_student_id[$z].'"><h1 class= "student_name_header">'.$final_list_first_name[$z].' '.$final_list_last_name[$z].'</h1>';
 		}
 		$course_id = $list_ind_courses[$i]['course_id'];
 		$query_timestamps = "SELECT timestamp from Attendance where student_id='$final_list_student_id[$z]'  and course_id = '$course_id'";
@@ -248,6 +248,7 @@ for($z=0; $z<count($final_list_student_id);$z++)
 		$overall_ind_attendance = getting_timetable($course_id);
 		$offset = 0;	
 		$top = $i +1;
+		$individual_color = rand(0,4);
 		$script_to_be_sent .= '<div id = "personal_stat'.$final_list_student_id[$z].''.$top.'" style="width: 600px; height: 400px; margin: 0 auto"><script>var dates'.$top.' = []; 
 		var number'.$top.' = []; 
 		number'.$top.' = '.json_encode($individual_attendance_record).'; 
@@ -286,6 +287,7 @@ layout: \'vertical\',
 	borderWidth: 0      
 	},
 series:[{
+color : \''.$colors_of_charts[$individual_color].'\',
 name: \'Course '.$top.'\',
       data: number'.$top.'
        }]
@@ -293,7 +295,7 @@ name: \'Course '.$top.'\',
 });
 </script></div>'; 
 
-//unset($list_ind_course_name);
+unset($individual_color);
 if ($i == count($list_ind_courses)-1)
 {
 	$script_to_be_sent .= '</div>';

@@ -57,7 +57,7 @@ top:12%;
 left : 3%;
 margin-top: 12%;
 font-size: 1.2em;
-
+cursor:pointer;
 }
 .students
 {
@@ -74,6 +74,7 @@ top: 10%;
 left: 85%;
 margin-top: 12%;
 font-size: 1.2em;
+cursor:pointer;
 }
 #stat
 {
@@ -101,6 +102,12 @@ top: 33%;
 width:600px;
 height:400px;}
 
+.student_name_header
+{
+margin:0 auto;
+text-align:center;
+padding-bottom: 2%;
+}
 .personal_stat3
 {
 position: absolute;
@@ -118,100 +125,96 @@ top: 53%;
 }
 #individual_courses1
 {
-display: none;
+display: none;padding-top:10%;
 }
 #individual_courses2
 {
-display: none;
+display: none;padding-top:10%;
 }
 #individual_courses3
 {
-display: none;
+display: none;padding-top:10%;
 }
 #individual_courses4
 {
-display: none;
+display: none;padding-top:10%;
 }
 
 
 #individual_courses5
 {
-display: none;
+display: none;padding-top:10%;
 }
 #individual_courses6
 {
-display: none;
+display: none;padding-top:10%;
 }
 
 
 #individual_courses7
 {
-display: none;
+display: none;padding-top:10%;
 }
 #individual_courses8
 {
-display: none;
+display: none;padding-top:10%;
 }
 
 
 #individual_courses9
 {
-display: none;
+display: none;padding-top:10%;
 }
 #individual_courses10
 {
-display: none;
+display: none;padding-top:10%;
 }
 
 
 #individual_courses11
 {
-display: none;
+display: none;padding-top:10%;
 }
 #individual_courses12
 {
-display: none;
+display: none;padding-top:10%;
 }
 
 
 #individual_courses13
 {
-display: none;
+display: none;padding-top:10%;
 }
 #individual_courses14
 {
-display: none;
+display: none;padding-top:10%;
 }
 #individual_courses15
 {
-display: none;
+display: none;padding-top:10%;
 }
 #individual_courses16
 {
-display: none;
+display: none;padding-top:10%;
 }
 
 
 #individual_courses17
 {
-display: none;
+display: none;padding-top:10%;
 }
 #individual_courses18
 {
-display: none;
+display: none;padding-top:10%;
 }
 
 
 #individual_courses19
 {
-display: none;
+display: none;padding-top:10%;
 }
 #individual_courses20
 {
-display: none;
+display: none;padding-top:10%;
 }
-
-
-
-
 
