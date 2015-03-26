@@ -16,7 +16,7 @@
 			{
 				if ($date["mday"]==date("d",$rel))
 				{
-					if (($date["hours"]==date("H",$rel))&&($date["minutes"]<30))
+					if (($date["hours"]==date("H",$rel))&&($date["minutes"]<=30))
 					{
 						echo "We're in! But a few minutes late";
 					}
