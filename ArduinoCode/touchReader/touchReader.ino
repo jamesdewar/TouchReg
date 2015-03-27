@@ -11,7 +11,7 @@ NfcAdapter nfc = NfcAdapter(interface); // create an NFC adapter object
 #include <HttpClient.h>
 
 int start; //starting block of memory on the card
-String room; //what room does this arduino represent
+int room; //what room does this arduino represent
 YunClient client;
 //HttpClient client2;
 const char* server;
@@ -25,7 +25,7 @@ void setup()
   //while(!Console) {;} 
   //Console.println("Hello");
   nfc.begin(); //starts up the NFC card
-  room = "G001";
+  room = 5;
   server = "ma301wm.gold.ac.uk";
   port = 80;
   //Console.println("Connected");

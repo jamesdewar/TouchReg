@@ -1,14 +1,17 @@
 <?php
+	/*
+	Program date.php used entirely for testing and experimentation. Not to be considered part of the program as a whole.
+	*/
 	include("connect.php");
 	$query = "SELECT * FROM Timetable WHERE room_id = '1'";
 	$execute = mysqli_query($dbc,$query);
 	$date = getdate();
 	while($row = mysqli_fetch_array($execute))
 	{
-		echo "<p>";
-		echo $row['time_in']." ";
-		echo $row['time_out'];
-		echo "------";
+		
+		//echo $row['time_in']." ";
+		//echo $row['time_out'];
+		//echo "------";
 		$rel = strtotime($row['time_in']);
 		if ($date["year"]==date("Y",$rel))
 		{
@@ -27,8 +30,12 @@
 				}
 			}
 		}
-		echo "</p>";
 	}
-	//$string =  $date["year"]."-".$date["mon"]."-".$date["mday"]." ".$date["hours"].":".$date["minutes"].":".$date["seconds"];
-	//echo $string;
+		echo "<p>";
+		$date = getdate();
+		$mysqldate = date('Y-m-d H:i:s',$date);
+		echo date("Y-m-d H:i:s");
+		echo "</p>";
+	$string =  $date["year"]."-".$date["mon"]."-".$date["mday"]." ".$date["hours"].":".$date["minutes"].":".$date["seconds"];
+	echo $string;
 ?>

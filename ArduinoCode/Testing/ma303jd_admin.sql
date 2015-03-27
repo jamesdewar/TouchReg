@@ -1,3 +1,7 @@
+-- The following database was provided by Jame Dewar as a demonstration of our existing system
+-- Used so I could test the functionality of the arduino to php interactions without disturbing the main database
+-- A back up of the results of the testing are also in our github
+
 -- phpMyAdmin SQL Dump
 -- version 3.4.10.1
 -- http://www.phpmyadmin.net
