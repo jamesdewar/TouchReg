@@ -13,7 +13,7 @@ User Side (Website)
 	URL: http://igor.gold.ac.uk/~ma303jd/login
 	Test logins:  Email: ma303jd@gold.ac.uk Password: ma303jd
 
-	<h1>Hardware Side (Arduino)</h1>
+	Hardware Side (Arduino)
 
 	Hardware Used
 	-  Arduino Yun (http://arduino.cc/en/Main/ArduinoBoardYun?from=Products.ArduinoYUN)
@@ -24,5 +24,5 @@ User Side (Website)
 	- 4 Wires
 	- 1 Micro USB cable
 	- 1 Ethernet cable
-- 6 Headers (used to extend distnace between arduino yun and nfc shield)
+	- Headers (used to extend distnace between arduino yun and nfc shield)
 
