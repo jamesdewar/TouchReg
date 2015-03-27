@@ -29,13 +29,14 @@ You can see 3 data visualization:
 ##Hardware Side (Arduino)
 
 How to test:
-- If arduino required for texting please contact William Moore
+- If arduino required for testing please contact William Moore
 - In place of arduino a simple URL will suffice for testing purposes:
 - igor.gold.ac.uk/~ma301wm/touchReader/checkin.php?cid=???&room=???
 - Replace the question marks with a card ID and a Room ID respectively
 - Room IDs: 1,2,3,4,5
 - Test Card IDs: D1+B1+67+C0, 71+C7+A6+C0, 04+CD+E1+EA+BC+2B+80, 01+53+3E+C0
 - NOTE: The database will not update if a class isn't scheduled within half an hour of you 'registering' a student's attendance. For accurate testing you would need to make sure you ran the check at the correct time. 
+- Video demonstration of hardware: https://www.youtube.com/user/WillTwoBill/videos
 
 Hardware Used
 -  Arduino Yun (http://arduino.cc/en/Main/ArduinoBoardYun?from=Products.ArduinoYUN)
