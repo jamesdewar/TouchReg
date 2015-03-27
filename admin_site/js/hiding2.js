@@ -12,6 +12,17 @@ It is long because of the amounts of students registered in the database.
 
 
 $(document).ready(function(){
+
+//we need to refresh to page to get all the stats. This code is adapted from this url: http://stackoverflow.com/questions/6985507/one-time-page-refresh-after-first-page-load
+
+window.onload = function() {
+    if(!window.location.hash) {
+        window.location = window.location + '#reload';
+        window.location.reload();
+    }
+}
+
+
 		$("#list_course1").click(function(){
 			$("#tableGraph").show();
 			$("#individual_courses1").hide();

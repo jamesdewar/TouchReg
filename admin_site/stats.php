@@ -5,7 +5,7 @@ session_start();
 $name = $_SESSION["course_list"];
 $list_attendees= array();
 $list_classes = array();
-$query_attendees = mysqli_query($db,"SELECT timestamp from Attendance where course_id = '$name'");
+$query_attendees = mysqli_query($db,"SELECT timestamp from Attendance where course_id = '$name' ORDER BY timestamp");
 
 while ($row = mysqli_fetch_array($query_attendees,MYSQLI_ASSOC))
 {

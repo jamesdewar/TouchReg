@@ -3,6 +3,7 @@ This is the main file of the admin website. Most/ALL of the logic and DISPLAY is
 Here is a list of url/websites which were used to help build this website
 ALOT of the implementations are my own and I will explain in detail so the reader can follow along
 URL: 
+- php Manual was also extensievly used
 - http://openenergymonitor.org/emon/node/107 -- was used but not extensive, only ides
 - www.w3schools.com
 
@@ -94,6 +95,7 @@ echo '<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min
 <script type="text/javascript" src="js/graph.js"></script>
 <script type="text/javascript" src="js/hiding2.js"></script>
 <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
 <link rel="stylesheet" type="text/css" href="css/normalize.css" />
 <link rel="stylesheet" type="text/css" href="css/demo.css" />
@@ -133,6 +135,12 @@ for($i=0;$i<count($_SESSION["general_attendance"]); $i++){
 // NOW we create 2 session variables that will hold the values for the specific course + specific attendance record
 $_SESSION["general_attendance_course"] = $list_of_course_dates;
 $_SESSION["general_attendance_number"] = $list_of_students;
+//Adding total attendance over semester to calculate overall attendance percentage
+$total_class_att_semester = 0;
+foreach($_SESSION["general_attendance_number"] as $number)
+{
+$total_class_att_semester = $total_class_att_semester + $number; 
+}
 
 echo "<div class = \"course_list\">";
 $temp_index = 1;
@@ -146,64 +154,71 @@ echo "<div class = \"students\"> Students </div>";
 
 //Printing the student list for that course
 echo "<div class = \"student_list\">";
+
 $length = count($final_list_first_name);
-for($i = 0; $i<$length; $i++){
+$total_expected_add_semester = ($length -1)*10;
+ for($i = 0; $i<$length; $i++){
 	echo "<div id =\"$final_list_student_id[$i]\"> ".$final_list_first_name[$i] . " " . $final_list_last_name[$i] . "<br></div>";
 }
 echo "</div>";
+//Building the percentage number of the course. We round the number to make it better.
+$percentage_att_semester = round(($total_class_att_semester / $total_expected_add_semester)*100);
 
 //This is the js for the overall attendance graph
 //We use the Session varaibles to poupulate. I read about the json_encode method here: http://php.net/manual/en/function.json-encode.php
 echo '
 <div id= "tableGraph">
 <div id = "stat" style="min-width: 600px; height: 400px;">
-
 <script>
 var dates = []; 
 var number = []; 
 number = '.json_encode($_SESSION['general_attendance_number']).'; 
 dates = '.json_encode($_SESSION['general_attendance_course']).';
 $(function () {
-	$(\'#stat\').highcharts({
-		chart: {
-			type: \'column\'
-		},	
-		title: {
-			text: \'Overall Attendance\',
-			x: -20 //center
-		},
-		xAxis: {
-			categories: dates
-		},
-		yAxis: {
-			min: 0,    
-			title: {
-				text: \'Number of Students (weekly)\'
-			},
-		},
-		plotOptions: {
-			bar: {
-				dataLabels: {
-					enabled: true
-				}
-			}
-		},
-		tooltip: {
-			valueSuffix: \' Weekly\'
-		},
-		legend: {
-			layout: \'vertical\',
-			align: \'right\',
-			verticalAlign: \'middle\',
-			borderWidth: 0	
-		},
-		series:[{
-			name: \'Course 1\',
-			data: number
-		}]
-	});
+		$(\'#stat\').highcharts({
+chart: {
+type: \'column\'
+},	
+title: {
+text: \'Overall Attendance\',
+x: -20 //center
+},
+xAxis: {
+categories: dates
+},
+yAxis: {
+min: 0,    
+thickInterval: 1,
+title: {
+text: \'Number of Students (weekly)\'
+},
+},
+plotOptions: {
+bar: {
+dataLabels: {
+enabled: true
+	    }
+     }
+	     },
+tooltip: {
+valueSuffix: \' Weekly\'
+	 },
+legend: {
+layout: \'vertical\',
+	align: \'right\',
+	verticalAlign: \'middle\',
+	borderWidth: 0	
+	},
+series:[{
+name: \'Course 1\',
+      data: number
+       }]
+});
 });
 </script>
+</div>
+<div id = "percentage">
+<h2>Average Attendance: <b>'.$percentage_att_semester.'%</b></h2>
 </div>
 ';
 
@@ -240,7 +255,7 @@ for($z=0; $z<count($final_list_student_id);$z++)
 	$final_ind_attendance = array();
 	//$individual_courses_seperator =  '<div id = "individual_courses'.$final_list_student_id[$z].'">';
 
-//Now that we know what courses the student attends we can get the stats for EACH one, this is the use of this loop
+	//Now that we know what courses the student attends we can get the stats for EACH one, this is the use of this loop
 	for ($i=0;$i<count($list_ind_courses);$i++)
 	{
 		// We start populating the string/script that will be sent to the browser and will build the graphs
@@ -250,7 +265,7 @@ for($z=0; $z<count($final_list_student_id);$z++)
 		}
 		//query to select the timestampt for that student in a specific course
 		$course_id = $list_ind_courses[$i]['course_id'];
-		$query_timestamps = "SELECT timestamp from Attendance where student_id='$final_list_student_id[$z]'  and course_id = '$course_id'";
+		$query_timestamps = "SELECT timestamp from Attendance where student_id='$final_list_student_id[$z]'  and course_id = '$course_id' ORDER BY timestamp ASC";
 		$individual_attendance_record = array();
 		$all_attendance_timestamp = array();
 		$overall_ind_attendance = array();
@@ -263,66 +278,67 @@ for($z=0; $z<count($final_list_student_id);$z++)
 		}
 		//we can now call the attendance_check method which is defined below. Learn more about it where is it defined
 		$individual_attendance_record = attendance_check($course_id,$all_attendance_timestamp);
-		
+
 		//We can empty the array to use in the next iteration of the loop.	
 		unset($all_attendance_timestamp);
 		// We now make a call to the getting_timetable method below .  Learn more about it where is it defined
 		$overall_ind_attendance = getting_timetable($course_id);
 		$offset = 0;	
-		$top = $i +1; // Used to create unique id in the css
+		$top = rand(0,100); // Used to create unique id in the css
 		$individual_color = rand(0,4); //random int. used for the colors of the graphs
 
-// We now can build the graph as we hold the information in the form of 2 arrays.
-//The string is appended each loop, so new scripts are added everytime the loop goes around.
-// the string that is built in the end will hold ALL the info for ALL the graphs of ALL the students
-//These graphs we built using High charts library. Please find more info here: http://www.highcharts.com/
-// Other links that helped me build these graphs. 
-// - http://jsfiddle.net/gh/get/jquery/1.9.1/highslide-software/highcharts.com/tree/master/samples/highcharts/demo/line-basic/
-
-
+		// We now can build the graph as we hold the information in the form of 2 arrays.
+		//The string is appended each loop, so new scripts are added everytime the loop goes around.
+		// the string that is built in the end will hold ALL the info for ALL the graphs of ALL the students
+		//These graphs we built using High charts library. Please find more info here: http://www.highcharts.com/
+		// Other links that helped me build these graphs. 
+		// - http://jsfiddle.net/gh/get/jquery/1.9.1/highslide-software/highcharts.com/tree/master/samples/highcharts/demo/line-basic/
+		$individual_att_rec_for_table = array();
+		$individual_att_rec_for_table = $individual_attendance_record;
+	
 		$script_to_be_sent .= '<div id = "personal_stat'.$final_list_student_id[$z].''.$top.'" style="width: 600px; height: 400px; margin: 0 auto"><script>var dates'.$top.' = []; 
 		var number'.$top.' = []; 
 		number'.$top.' = '.json_encode($individual_attendance_record).'; 
 		dates'.$top.' = '.json_encode($overall_ind_attendance).';
 		$(function () {
-			$(\'#personal_stat'.$final_list_student_id[$z].''.$top.'\').highcharts({
-				chart:{
-					type: \'column\'
-				},
-				title: {
-					text: \''.$list_ind_course_name[$i].'\',
-					x: -20 //center
-				},
-				xAxis: {
-					categories: dates'.$top.'
-				},
-				yAxis: {
-					title: {
-						text: \'Number of Students (weekly)\'
-					},
-				},
-				plotOptions: {
-					bar: {
-						dataLabels: {
-							enabled: true
-						}
-					}
-				},
-				tooltip: {
-					valueSuffix: \'Weekly\'
-				},
-				legend: {
-					layout: \'vertical\',
-					align: \'right\',
-					verticalAlign: \'middle\',
-					borderWidth: 0      
-				},
-				series:[{
-					color : \''.$colors_of_charts[$individual_color].'\',
-					name: \'Course '.$top.'\',
-					data: number'.$top.'
-				}]
-			});
+				$(\'#personal_stat'.$final_list_student_id[$z].''.$top.'\').highcharts({
+chart:{
+type: \'column\'
+},
+title: {
+text: \''.$list_ind_course_name[$i].'\',
+x: -20 //center
+},
+xAxis: {
+categories: dates'.$top.'
+},
+yAxis: {
+min:0,
+max:2,
+tickInterval:1,
+title: {
+text: \'Number of Students (weekly)\'
+},
+},
+plotOptions: {
+bar: {
+dataLabels: {
+enabled: true
+}
+}
+},
+legend: {
+layout: \'vertical\',
+	align: \'right\',
+	verticalAlign: \'middle\',
+	borderWidth: 0      
+	},
+series:[{
+color : \''.$colors_of_charts[$individual_color].'\',
+	name: \''.$list_ind_course_name[$i].'\',
+	data: number'.$top.'
+       }]
+});
 });
 </script></div>'; 
 
@@ -331,26 +347,32 @@ if ($i == count($list_ind_courses)-1)
 {
 	$script_to_be_sent .= '</div>';
 }
-}
-$attendance_table[$final_list_student_id[$z]] = $individual_attendance_record; // Array for the table below
-unset($individual_attendance_record);
-unset($overall_ind_attendance);
-
-}
-//The styling and layout for the table 
-echo'
-<div class="container">
-<div class="component">
-<table>
-<thead>
-<tr>
-<th>Student Names</th>';
-
-//Looping through the dates array for the course the table is for
-foreach($_SESSION["general_attendance_course"] as $dates)
+if ($i == 0)
 {
-	echo '<th>'.$dates.'</th>';
+	$attendance_table[$final_list_student_id[$z]] = $individual_attendance_record; // Array for the table below
+
 }
+}
+
+unset($individual_attendance_record);
+		unset($overall_ind_attendance);
+		unset($all_attendance_timestamp);
+		}
+		//The styling and layout for the table 
+		//print_r($attendance_table);
+		echo'
+		<div class="container">
+		<div class="sticky-wrap">
+		<table class = "sticky-enabled">
+		<thead>
+		<tr>
+		<th>Student Names</th>';
+
+		//Looping through the dates array for the course the table is for
+		foreach($_SESSION["general_attendance_course"] as $dates)
+		{
+		echo '<th>'.$dates.'</th>';
+		}
 echo '
 </tr>
 </thead>
@@ -391,7 +413,7 @@ function getting_timetable($course_num)
 {
 	$list_lectures = array();
 	$dbc = mysqli_connect('localhost', 'ma303jd', 'james23','ma303jd_admin');
-	$query_timetable = mysqli_query($dbc,"SELECT time_in from Timetable where course_id= '$course_num'");
+	$query_timetable = mysqli_query($dbc,"SELECT time_in from Timetable where course_id= '$course_num' ORDER BY time_in ASC");
 	while ($row = mysqli_fetch_array($query_timetable,MYSQLI_ASSOC))
 	{
 		$list_lectures[] = $row;
@@ -404,10 +426,10 @@ function getting_timetable($course_num)
 
 		//Creating an array of attendance over the whole time period
 		$format_date = $time_in->format('Y-m-d'); // formatting the timestamp as we want to display
-		$final_attendance_record[] = $format_date;
+		$final_attendance_record_dates[] = $format_date;
 
 	}
-	return $final_attendance_record; //return array of timestamps
+	return $final_attendance_record_dates; //return array of timestamps
 }
 
 //this method is meant to take in a course number and students timestamps and return an array of representing the students attendance over 
@@ -418,7 +440,7 @@ function attendance_check($course_num,$input)
 	$dbc = mysqli_connect('localhost', 'ma303jd', 'james23','ma303jd_admin');
 	$final_attendance_record = array(0,0,0,0,0,0,0,0,0,0); // array of results initialised
 	$list_classes = array();
-	$temp_query = "SELECT time_in,time_out from Timetable where course_id= '$course_num'";
+	$temp_query = "SELECT time_in,time_out from Timetable where course_id= '$course_num' ORDER BY time_in";
 	$query_attendance = mysqli_query($dbc,$temp_query);
 	while ($row = mysqli_fetch_array($query_attendance,MYSQLI_ASSOC))
 	{	
