@@ -1,47 +1,12 @@
 <?php
-	include("connect.php");
-	$cid = $_GET["cid"];
-	$room = $_GET["room"];
-	$date = getdate();
-	$dump = "Received cid = $cid and room = $room.";
-	$query = "SELECT * FROM Students WHERE cardID = '$cid'";
-	$execute = mysqli_query($dbc,$query);
-	$confirm = mysqli_fetch_array($execute);
-	if ($confirm)
+	include("connect.php"); //Connects PHP script to the database
+	$cid = $_GET["cid"]; //Gets card ID from the arduino 
+	$room = $_GET["room"]; //Gets room number from the arduino
+	echo "<p>First include $cid and $room</p>"; //Used to notify user for testing purposes
+	include("checkstudent.php"); //Checks student card is registered to the database
+	echo "<p>Second include $sid and $courses</p>"; //Used to notify user for testing purposes
+	if ($checkenrol) //If student is enrolled the program proceeds to check the student is in the correct time and place
 	{
-		$sid = $confirm["Student_ID"];
-		$courses = $confirm["Course_ID"];
-		$dump = "$dump student id is $sid and courses are $courses.";
-		$query = "SELECT * FROM Timetable WHERE room_id = '$room'";
-		$execute = mysqli_query($dbc,$query);
-		$date = getdate();
-		while($row = mysqli_fetch_array($execute))
-		{
-			$rel = strtotime($row['time_in']);
-			if ($date["year"]==date("Y",$rel))
-			{
-				if ($date["mon"]==date("m",$rel))
-				{
-					if ($date["mday"]==date("d",$rel))
-					{
-						if (($date["hours"]==date("H",$rel))&&($date["minutes"]<=30))
-						{
-							$courseID = $row["course_ID"];
-						}
-						else if (($date["hours"]==(date("H",$rel)-1))&&($date["minutes"]>30))
-						{
-							$courseID = $row["course_ID"];
-						}
-					}
-				}
-			}
-			$dump = "$dump Room is $room "
-		}
+		include("getcourse.php"); //Checks the room against the course and updates the attendance tables
 	}
-	else
-	{
-		$dump = "$dump student ID not found";
-	}
-	$outquery = "INSERT INTO output(dump) VALUES ('$dump')";
-	mysqli_query($dbc,$outquery);
 ?>
