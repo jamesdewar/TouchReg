@@ -3,5 +3,5 @@
 	$b = "ma301wm";
 	$c = "wikfe517";
 	$d = "ma301wm_test";
-	$dbc = mysqli_connect("localhost","ma301wm","wikfe517","ma301wm_test"); //Connects to the databse, used throughout program
+	$dbc = mysqli_connect("localhost","ma303jd","james23","ma303jd_admin"); //Connects to the databse, used throughout program
 ?>
