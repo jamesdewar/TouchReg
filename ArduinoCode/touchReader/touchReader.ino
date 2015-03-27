@@ -1,173 +1,54 @@
-<<<<<<< HEAD
-#include <PN532.h> //These are needed for the NFC reader to work
-#define SCK 13
-#define MOSI 11
-#define SS 10
-#define MISO 12
-PN532 nfc(SCK, MISO, MOSI, SS); //Set up the NFC reader
-=======
-#include <PN532.h>
+#include <Console.h> //Console used for visual feed back that the entered code is working (not used unless needed
+#include <Bridge.h>
+#include <SPI.h> //Sets up digital pins being used for sending data to the user
+#include "PN532_SPI.h" //Sets up digital pins being used for transferring the nfc signal
+#include "PN532.h" //Library that allows the nfc card to work. Sourced from Seeed studios from https://github.com/Seeed-Studio/PN532
+#include "NfcAdapter.h" //Sourced from https://github.com/don/NDEF
+PN532_SPI interface(SPI, 10); // create a PN532 SPI interface with the SPI CS terminal located at digital pin 10 (code take from https://github.com/don/NDEF)
+NfcAdapter nfc = NfcAdapter(interface); // create an NFC adapter object
+#include <HttpClient.h> //Allows Yun to call a URL and send the card numbers to the PHP scripts
 
-//#include <PN532M.h>
-
-#include <Console.h>
-//#include <PN532.h> //These are needed for the NFC reader to work
-#include <SPI.h>
-#define SS 53
-#if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
-  #define MISO 50
-  #define MOSI 51
-  #define SCK 52
-#else
-  #define MISO 12
-  #define MOSI 11
-  #define SCK 13
-#endif
-//#define PN532M_CS 12
-//PN532M nfc(PN532M_CS); //Set up the NFC reader -SCK, MISO, MOSI, SS
-PN532 nfc(SCK, MISO, MOSI, SS);
-//#include <Bridge.h>
-//#include <YunServer.h>
-//#include <YunClient.h>
->>>>>>> origin/arduino_work
-
-int limit; //length of a studentID
-int start; //starting block of memory on the card
-String room; //what room does this arduino represent
+int room; //what room does this arduino represent - needed for checking the timetable. At present can only be changed in the code
+int waiting; //LED to show that the arduino is waiting for a card
+int success; //LEDto show that the card has been received
 
 void setup()
-<<<<<<< HEAD
-{ 
-  Serial.begin(9600); //Opens serial port for user interaction (may not be needed in final version)
-  nfc.begin(); //starts up the NFC card
-  //runCurl(); These are for running external programs
-  //runCpuInfo();
-  uint32_t versiondata = nfc.getFirmwareVersion(); //Checks to make sure the NFC Shield is there
-  if (!versiondata)
-  {
-    Serial.print("Didn't find PN53x board"); //Lets you know if it can't find the NFC shield
-    while (1);
-  }
-  nfc.SAMConfig(); //sets up NFC program
-  
-  room = "G001";
-  limit = 7; //Length of the studentID. Will have to be manually updated if student ID format changes
-  start = 20; //Staring block of memory the program checks, as above this would need to be manually reset.
-  Serial.println("Hello! Welcome to the touchReader program."); //Lets the user know the program is ready
-=======
 {
-  Bridge.begin();
-  Console.begin();
-  //Serial.begin(9600); //Opens serial port for user interaction (may not be needed in final version)
-  SPI.begin();
-  /*while (!Serial)
-  {
-    ;
-  }*/
-  while(!Console)
-  {
-    ;
-  }
-  Console.println("Boo");
-  //SPI.setBitOrder(LSBFIRST);
-  nfc.begin(); //starts up the NFC card
-  uint32_t versiondata = nfc.getFirmwareVersion(); //Checks to make sure the NFC Shield is there
-  Console.println(versiondata);
-  if (!versiondata)
-  {
-    Console.println("Didn't find PN53x board"); //Lets you know if it can't find the NFC shield
-    while (1);
-  }
-  Console.println("Boo2");
-  nfc.SAMConfig(); //sets up NFC program
-  Console.println("Boo3");
-  room = "G001";
-  limit = 7; //Length of the studentID. Will have to be manually updated if student ID format changes
-  start = 20; //Staring block of memory the program checks, as above this would need to be manually reset.
-  Console.println("Hello! Welcome to the touchReader program."); //Lets the user know the program is ready
-  //Serial.println("Hello! Welcome to the touchReader program."); //Lets the user know the program is ready
->>>>>>> origin/arduino_work
+  Bridge.begin(); //Sets up the connection to arduino over internet
+  //Console.begin(); //All Console notes are used for feedback when the code is running, not necessary exept for testing
+  //while(!Console) {;} //waits for user to connect.Unnecessary in main version of the program
+  //Console.println("Hello! Welcome to the touchReader program."); //Lets the user know the program is ready
+  SPI.begin(); //Sets up the digital pins for the nfc communication
+  nfc.begin(); //starts up the NFC card reader
+  room = 5; //Room is currently set to 5
+  waiting = 11; //Pin for the red led
+  success = 9; //Pin for the green led
+  pinMode(waiting, OUTPUT); 
+  pinMode(success, OUTPUT); //sets up two designated LED pins
 }
 
 void loop()
 {
-  // see if there's incoming serial data:
-  uint8_t studentNo[limit];
-<<<<<<< HEAD
-  
-  uint32_t id;
-  Serial.println("Please hold the card over the reader");
-  while(id==0) //waits till a card is presented
-=======
-
-  uint32_t id;
-  Console.println("Please hold the card over the reader");
-  while (id == 0) //waits till a card is presented
->>>>>>> origin/arduino_work
-  {
-    id = nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A); //Attempts to read student's card
-  }
-  if (id != 0) //Starts main program once card is placed on reader
-  {
-<<<<<<< HEAD
-    Serial.println();
-    Serial.println("Reading card, please do not move it."); //Lets the user know what's happening
-    for (int i=0;i<limit;i++) //scans through each block on the card that contains the student number
-    {
-      uint8_t block[16];
-      nfc.readMemoryBlock(1,(start+i),block); //receives the student number from the card
-=======
-    Console.println();
-    Console.println("Reading card, please do not move it."); //Lets the user know what's happening
-    for (int i = 0; i < limit; i++) //scans through each block on the card that contains the student number
-    {
-      uint8_t block[16];
-      nfc.readMemoryBlock(1, (start + i), block); //receives the student number from the card
->>>>>>> origin/arduino_work
-      studentNo[i] = block[0]; //assigns it to the student number array (hex values)
-    }
-    //ADD SOME CHECKS TO MAKE SURE THE STUDENTID IS IN THE CORRECT FORMAT ETC
-    String studentID;
-<<<<<<< HEAD
-    for (int i=0;i<limit;i++) {studentID+=String((char)studentNo[i]);}
-    Serial.print("The card contains the ID ");
-    Serial.println(studentID);
-    Serial.println();
-    Serial.println("Please remove the card.");
-  }
-  Serial.println();
-  delay(1000);
+  digitalWrite(success,LOW);
+  digitalWrite(waiting,HIGH); 
+  //Console.println("\nScan an NFC tag\n"); //represents waiting for the card to be presented
+   if (nfc.tagPresent()) // Checks to see if NFC tag tag is present. Code mostly from http://www.seeedstudio.com/wiki/NFC_Shield_V2.0
+   {
+     NfcTag tag = nfc.read(); // read the NFC data into an object, NfcTag
+     digitalWrite(waiting,LOW); //Swaps LEDs to let user know the scan has taken place. Happens after card is read to make sure nothing goes wrong
+     digitalWrite(success, HIGH);
+     String id = tag.getUidString(); //Gets a usable string of the card ID from the NfcTag class 
+     //Console.println(tag.getUidString()); //Used to display the tag to demonstrate that it was working
+     upload(id); //Activates the upload process with the nfc card datain it
+   }
+   delay(1000); // wait half one second before scanning again 
 }
-
-void setupInternet()
-=======
-    for (int i = 0; i < limit; i++) {
-      studentID += String((char)studentNo[i]);
-    }
-    Console.print("The card contains the ID ");
-    Console.println(studentID);
-    Console.println();
-    Console.println("Please remove the card.");
-  }
-  Console.println();
-  delay(1000);
-}
-
-/*void setupInternet()
->>>>>>> origin/arduino_work
+void upload(String id) //upload class sends the room number and card ID to the php script 'checkin.php'
 {
+  HttpClient client; //Idea to use taken from here http://arduino.cc/en/Tutorial/HttpClient Allows arduino to call a url
+  String cid = id; //Card ID to be sent
+  cid.replace(' ','+'); //Worked out I needed to replace the spaces in the URL with plusses from here: http://stackoverflow.com/questions/4462219/get-request-with-space-in-querystring-crashes-code
+  String query = "http://igor.gold.ac.uk/~ma301wm/touchReader/checkin.php?cid="+cid+"&room="+room; //Builds the get request using the URL and data
+  client.get(query); //Calls the website (ie, sends the data through)
 }
-void upload(String sid) //Use of client id depended on libraries available with arduino yun
-{
-  client.print("GET /add.php? room=");
-  client.print(room);
-  client.print(" && studentID=");
-  client.print(sid);
-  client.println(" HTTP/1.1");
-  client.println("Host: ma301wm.igor.gold.com");
-  client.println("User-Agent: MyArduino");
-<<<<<<< HEAD
-}
-=======
-}*/
->>>>>>> origin/arduino_work
+
