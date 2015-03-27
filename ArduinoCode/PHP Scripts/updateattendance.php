@@ -8,12 +8,8 @@
 		$lastcheckin = strtotime($row['timestamp']); //gets time of attendance in correct format
 		if (($date["year"]==date("Y",$lastcheckin))&&($date["mon"]==date("m",$lastcheckin))&&($date["mday"]==date("d",$lastcheckin)))
 		{ //Checks attendances was from this day
-			if (($date["hours"]==date("H",$lastcheckin))&&($date["minutes"]<=30))
+			if ((($date["hours"]==date("H",$lastcheckin))&&($date["minutes"]<=30))||(($date["hours"]==(date("H",$lastcheckin)-1))&&($date["minutes"]>30)))
 			{ //Checks if the attendance already happened within half an hour of the current time
-				$continue = false; //stops program if it has
-			}
-			else if (($date["hours"]==(date("H",$lastcheckin)-1))&&($date["minutes"]>30))
-			{ //Checks if attendance already happened in the previous half hour
 				$continue = false; //stops program if it has
 			}
 		}
