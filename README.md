@@ -11,6 +11,8 @@ Members of the team:
 
 ## Admin Website 
 
+When you login with the credentials below you will see the statistics that we built from our database.
+You can click on ANY of the students to see their individual statistics. 
 - URL: http://igor.gold.ac.uk/~ma303jd/login
 - Credentials: 
 - Username: ma303jd@gold.ac.uk 
